@@ -5,326 +5,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بابا عبده</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            direction: rtl;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-        }
-        header {
-            background: #ff6600;
-            color: white;
-            padding: 15px;
-            font-size: 24px;
-            position: relative;
-        }
-        .small-text {
-            position: absolute;
-            left: 10px;
-            top: 5px;
-            font-size: 12px;
-            color: white;
-        }
-        main {
-            padding: 20px;
-        }
-        /* Buttons */
-        .btn {
-            padding: 8px 16px;
-            margin: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-primary { background: #28a745; color: white; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn:hover { opacity: 0.9; }
-        /* Tables Grid */
-        #tablesContainer { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
-        .table {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border: 2px solid #ff6600;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.2s;
-        }
-        .table:hover { transform: scale(1.05); }
-        /* Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center;
-        }
-        .modal {
-            background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px;
-            text-align: right;
-        }
-        .modal input {
-            width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;
-            border: 1px solid #ccc; border-radius: 4px;
-        }
-        /* Menu List */
-        #menuList { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
-        .menu-card {
-            background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .menu-card h4 { margin: 0; }
-        .menu-actions { margin-top: 10px; display: flex; justify-content: space-between; }
-        /* Table Orders */
-        #menuGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 20px; }
-        .item-card {
-            background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .orders-list { list-style: none; padding: 0; margin-top: 20px; }
-        .orders-list li {
-            background: white; padding: 10px; margin: 5px 0; border-radius: 5px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        body {font-family: Arial, sans-serif; direction: rtl; margin:0; padding:0; background:#f8f8f8;}
+        header {background:#ff6600; color:white; padding:15px; text-align:center; position:relative;}
+        .small-text {position:absolute; top:5px; left:10px; font-size:12px; color:white;}
+        main {padding:20px;}
+        .btn {padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-size:14px;}
+        .btn-primary {background:#28a745; color:white;}
+        .btn-secondary {background:#6c757d; color:white;}
+        .btn-danger {background:#dc3545; color:white;}
+        .btn-warning {background:#ffc107; color:black;}
+        .btn:hover {opacity:0.9;}
+        #tablesContainer {display:flex; flex-wrap:wrap; justify-content:center; margin-top:20px;}
+        .table {width:120px; height:120px; background:white; border:2px solid #ff6600; margin:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; border-radius:8px; transition:transform .2s; font-weight:bold; position:relative;}
+        .table:hover {transform:scale(1.05);}
+        .rename-btn {position:absolute; bottom:5px; right:5px; font-size:12px; padding:2px 5px;}
+        .modal-overlay {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center;}
+        .modal {background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; text-align:right;}
+        .modal input, .modal textarea {width:100%; padding:8px; margin:5px 0; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;}
+        /* Orders Dropdown */
+        .dropdown-container {margin-top:20px;}
+        #categoryDropdown {width:100%; padding:8px; font-size:14px; border-radius:5px; border:1px solid #ccc;}
+        .items-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-top:10px;}
+        .card {background:white; padding:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:flex; flex-direction:column; justify-content:space-between;}
+        .orders-list {list-style:none; padding:0; margin-top:20px;}
+        .orders-list li {background:white; padding:10px; margin:5px 0; border-radius:5px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
+        .note {width:100%; font-size:12px; color:#555; text-align:right; margin-top:5px;}
+        .report-list {list-style:none; padding:0; margin-top:20px;}
+        .report-list li {background:white; padding:10px; margin:5px 0; border-radius:5px; display:flex; justify-content:space-between;}
     </style>
 </head>
 <body>
-    <header>
-        <h1>بابا عبده</h1>
-        <span class="small-text">محمد وليد سعيد حسن عبد الهادي</span>
-    </header>
-    <main id="main-content">
-        <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
-        <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
-        <div id="tablesContainer"></div>
-    </main>
+<header>
+    <h1>بابا عبده</h1>
+    <span class="small-text">محمد وليد سعيد حسن عبد الهادي</span>
+</header>
+<main id="main-content">
+    <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
+    <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
+    <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
+    <div id="tablesContainer"></div>
+</main>
 
-    <!-- Modal for Menu Item -->
-    <div class="modal-overlay" id="menuModal">
-        <div class="modal">
-            <h3 id="modalTitle">إضافة صنف</h3>
-            <input type="text" id="menuName" placeholder="اسم الصنف">
-            <input type="number" id="menuPrice" placeholder="السعر (جنيه)">
-            <div style="text-align: left; margin-top: 10px;">
-                <button class="btn btn-primary" onclick="saveMenuItem()">حفظ</button>
-                <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
-            </div>
+<!-- Note Modal -->
+<div class="modal-overlay" id="noteModal">
+    <div class="modal">
+        <h3>إضافة ملاحظة</h3>
+        <textarea id="noteInput" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+        <div style="text-align:left; margin-top:10px;">
+            <button class="btn btn-primary" onclick="saveNote()">إضافة</button>
+            <button class="btn btn-secondary" onclick="closeNoteModal()">إلغاء</button>
         </div>
     </div>
+</div>
 
-    <script>
-        let editIndex = -1;
+<!-- Report Login Modal -->
+<div class="modal-overlay" id="reportLoginModal">
+    <div class="modal">
+        <h3>تسجيل الدخول للتقارير</h3>
+        <input type="password" id="reportPassword" placeholder="أدخل كلمة المرور">
+        <div style="text-align:left; margin-top:10px;">
+            <button class="btn btn-primary" onclick="checkReportPassword()">دخول</button>
+            <button class="btn btn-secondary" onclick="closeReportLogin()">إلغاء</button>
+        </div>
+    </div>
+</div>
 
-        function createTables() {
-            let num = prompt("كم عدد الترابيزات؟");
-            if (!num || isNaN(num) || num <= 0) return;
-            localStorage.setItem("numTables", num);
-            loadTables();
-        }
+<script>
+// Data structure: menuSections = [{ name: 'قسم', items: [{ name, price }] }]
+function getMenu() { return JSON.parse(localStorage.getItem('menuSections')) || []; }
+function saveMenu(sections) { localStorage.setItem('menuSections', JSON.stringify(sections)); }
 
-        function loadTables() {
-            let num = +localStorage.getItem("numTables") || 0;
-            let container = document.getElementById("tablesContainer");
-            container.innerHTML = "";
-            for (let i = 1; i <= num; i++) {
-                let div = document.createElement('div');
-                div.className = 'table';
-                div.textContent = `طاولة ${i}`;
-                div.onclick = () => openTable(i);
-                container.appendChild(div);
-            }
-        }
+// -- Home --
+function createTables() {
+    let num = prompt('كم عدد الترابيزات؟'); 
+    if(!num||isNaN(num)||num<=0) return;
+    localStorage.setItem('numTables', num); 
+    localStorage.setItem('tableNames', JSON.stringify(Array.from({length:num}, (_,i)=>`طاولة ${i+1}`)));
+    loadTables();
+}
+function loadTables() {
+    let num = +localStorage.getItem('numTables')||0;
+    let names = JSON.parse(localStorage.getItem('tableNames'))||[];
+    let c = document.getElementById('tablesContainer'); 
+    c.innerHTML='';
+    for(let i=0;i<num;i++){ 
+        let d=document.createElement('div'); 
+        d.className='table'; 
+        d.innerHTML=`<div class="label">${names[i]||("طاولة "+(i+1))}</div>`;
+        d.onclick=()=>openTable(i+1);
+        let btn=document.createElement('button');
+        btn.textContent='✏️';
+        btn.className='rename-btn btn btn-warning';
+        btn.onclick=(e)=>{e.stopPropagation(); renameTable(i);};
+        d.appendChild(btn);
+        c.appendChild(d);
+    }    
+}
+function renameTable(i){
+    let names=JSON.parse(localStorage.getItem('tableNames'))||[];
+    let newName=prompt('اكتب اسم الطاولة الجديد:', '');
+    if(newName!==null && newName.trim()!==''){
+        names[i]=newName.trim();
+    }else{
+        names[i]=`طاولة ${i+1}`;
+    }
+    localStorage.setItem('tableNames', JSON.stringify(names));
+    loadTables();
+}
 
-        function manageMenu() {
-            let main = document.getElementById('main-content');
-            main.innerHTML = `
-                <h2>إدارة المنيو</h2>
-                <div>
-                    <input type="text" id="searchMenu" placeholder="🔍 بحث..." oninput="filterMenu()" style="width: 60%; padding: 8px; margin: 10px 0;">
-                    <button class="btn btn-primary" onclick="openAddModal()">إضافة صنف +</button>
-                </div>
-                <div id="menuList"></div>
-                <div style="margin-top: 20px; text-align: right;">عدد الأصناف: <span id="countMenu">0</span></div>
-                <button class="btn btn-secondary" onclick="loadHomeScreen()">رجوع</button>
-            `;
-            displayMenuItems();
-        }
+// -- Menu Management --
+function manageMenu() {
+    let main = document.getElementById('main-content');
+    main.innerHTML = `
+        <h2>إدارة المنيو</h2>
+        <div><input type="text" id="newCategory" placeholder="اسم القسم"><button class="btn btn-primary" onclick="addCategory()">إضافة قسم</button></div>
+        <div id="menuContainer"></div>
+        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
+    `;
+    renderMenu();
+}
+function loadHome(){ 
+    document.getElementById('main-content').innerHTML=`
+        <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
+        <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
+        <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
+        <div id="tablesContainer"></div>
+    `; 
+    loadTables(); 
+}
+function renderMenu() {
+    let c = document.getElementById('menuContainer'); c.innerHTML='';
+    let sections = getMenu();
+    sections.forEach((sec,ci)=>{
+        let s = document.createElement('div'); s.className='section';
+        s.innerHTML = `<h3>${sec.name}</h3>`;
+        sec.items.forEach((it,ii)=>{
+            let itDiv = document.createElement('div'); itDiv.className='item';
+            itDiv.innerHTML = `<span>${it.name} - ${it.price} ج</span><button class="btn btn-danger" onclick="removeItem(${ci},${ii})">حذف</button>`;
+            s.appendChild(itDiv);
+        });
+        s.innerHTML += `<button class="btn btn-primary" onclick="showAddItemForm(${ci})">إضافة صنف</button><button class="btn btn-danger" onclick="removeCategory(${ci})">حذف قسم</button><div id="addForm${ci}" class="add-form"></div>`;
+        c.appendChild(s);
+    });
+}
+function addCategory(){ let n = document.getElementById('newCategory').value.trim(); if(!n) return; let m=getMenu(); m.push({name:n,items:[]}); saveMenu(m); document.getElementById('newCategory').value=''; renderMenu(); }
+function removeCategory(ci){ if(!confirm('حذف القسم؟')) return; let m=getMenu(); m.splice(ci,1); saveMenu(m); renderMenu(); }
+function showAddItemForm(ci){ let f = document.getElementById(`addForm${ci}`); f.innerHTML = `
+    <input type="text" id="itemName${ci}" placeholder="اسم الصنف">
+    <input type="number" id="itemPrice${ci}" placeholder="السعر">
+    <button class="btn btn-primary" onclick="addItem(${ci})">إضافة</button>
+`; f.style.display='block'; }
+function addItem(ci){ let m=getMenu(); let n=document.getElementById(`itemName${ci}`).value.trim(); let p=parseFloat(document.getElementById(`itemPrice${ci}`).value); if(!n||isNaN(p)) return; m[ci].items.push({name:n,price:p}); saveMenu(m); renderMenu(); }
+function removeItem(ci,ii){ if(!confirm('حذف الصنف؟')) return; let m=getMenu(); m[ci].items.splice(ii,1); saveMenu(m); renderMenu(); }
 
-        function displayMenuItems() {
-            let list = document.getElementById('menuList');
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            list.innerHTML = '';
-            menu.forEach((item, idx) => {
-                let card = document.createElement('div');
-                card.className = 'menu-card';
-                card.innerHTML = `
-                    <h4>${item.name}</h4>
-                    <div>${item.price} جنيه</div>
-                    <div class="menu-actions">
-                        <button class="btn btn-secondary" onclick="openEditModal(${idx})">✏️</button>
-                        <button class="btn btn-danger" onclick="removeMenuItem(${idx})">🗑️</button>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-            document.getElementById('countMenu').textContent = menu.length;
-        }
+// -- Orders with Dropdown --
+let currentNoteItem=null;
+function openTable(num){ 
+    localStorage.setItem('currentTable',num); 
+    let names=JSON.parse(localStorage.getItem('tableNames'))||[];
+    let main=document.getElementById('main-content'); 
+    main.innerHTML=`
+        <h2>إدارة الطلبات – ${names[num-1]||("طاولة "+num)}</h2>
+        <div class="dropdown-container"><select id="categoryDropdown"></select></div>
+        <div class="items-grid" id="menuGrid"></div>
+        <h3>الطلبات</h3><ul class="orders-list" id="ordersList"></ul>
+        <div style="text-align:right;font-weight:bold; margin-top:10px;">الإجمالي: <span id="totalPrice">0</span> ج</div>
+        <button class="btn btn-danger" onclick="clearOrders()">حذف الكل</button>
+        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
+    `; 
+    initDropdown(); 
+    displayOrders(); 
+}
+function initDropdown(){ let dd=document.getElementById('categoryDropdown'); dd.innerHTML=''; getMenu().forEach((s,i)=>{ let o=document.createElement('option'); o.value=i; o.textContent=s.name; dd.appendChild(o); }); dd.onchange=renderItems; if(dd.options.length) renderItems(); }
+function renderItems(){ let idx=+document.getElementById('categoryDropdown').value; let items=getMenu()[idx].items; let g=document.getElementById('menuGrid'); g.innerHTML=''; items.forEach(it=>{ let c=document.createElement('div'); c.className='card'; c.innerHTML=`<h4>${it.name}</h4><div class="price">${it.price} ج</div>`; let b=document.createElement('button'); b.textContent='+'; b.onclick=()=>{currentNoteItem=it; openNoteModal();}; c.appendChild(b); g.appendChild(c); }); }
+function openNoteModal(){ document.getElementById('noteInput').value=''; document.getElementById('noteModal').style.display='flex'; }
+function closeNoteModal(){ document.getElementById('noteModal').style.display='none'; }
+function saveNote(){ let note=document.getElementById('noteInput').value.trim(); let t=localStorage.getItem('currentTable'), k=`orders_${t}`; let ord=JSON.parse(localStorage.getItem(k))||[]; let it=currentNoteItem; let ex=ord.find(o=>o.name===it.name && o.note===note); if(ex) ex.qty++; else ord.push({name:it.name,price:it.price,qty:1,note}); localStorage.setItem(k,JSON.stringify(ord)); closeNoteModal(); displayOrders(); }
+function displayOrders(){ let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; let lst=document.getElementById('ordersList'); lst.innerHTML=''; let tot=0; ord.forEach((o,i)=>{ tot+=o.price*o.qty; let li=document.createElement('li'); li.innerHTML=`<span>${o.name} × ${o.qty}</span><span>${o.price*o.qty} ج</span><div class="note">${o.note||''}</div><button class="btn btn-danger" onclick="removeOne(${i})">–</button>`; lst.appendChild(li); }); document.getElementById('totalPrice').textContent=tot; }
+function removeOne(i){ let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; if(ord[i].qty>1) ord[i].qty--; else ord.splice(i,1); localStorage.setItem(k,JSON.stringify(ord)); displayOrders(); }
+function clearOrders(){ if(confirm('حذف جميع الطلبات؟')){ let t=localStorage.getItem('currentTable'); localStorage.removeItem(`orders_${t}`); displayOrders(); }}
 
-        function filterMenu() {
-            let query = document.getElementById('searchMenu').value.trim().toLowerCase();
-            let cards = document.querySelectorAll('.menu-card');
-            cards.forEach(card => {
-                let text = card.querySelector('h4').textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
-            });
-        }
+// -- Reports --
+function openReportLogin(){ document.getElementById('reportPassword').value=''; document.getElementById('reportLoginModal').style.display='flex'; }
+function closeReportLogin(){ document.getElementById('reportLoginModal').style.display='none'; }
+function checkReportPassword(){ 
+    let pass=document.getElementById('reportPassword').value; 
+    if(pass==="24102004"){ closeReportLogin(); openReports(); }
+    else alert("كلمة المرور غير صحيحة"); 
+}
+function openReports(){
+    let main=document.getElementById('main-content'); 
+    let num=+localStorage.getItem('numTables')||0;
+    let total=0;
+    let summary={};
+    for(let i=1;i<=num;i++){
+        let k=`orders_${i}`;
+        let ord=JSON.parse(localStorage.getItem(k))||[];
+        ord.forEach(o=>{
+            total+=o.price*o.qty;
+            if(!summary[o.name]) summary[o.name]={qty:0,total:0};
+            summary[o.name].qty+=o.qty;
+            summary[o.name].total+=o.price*o.qty;
+        });
+    }
+    main.innerHTML=`<h2>التقارير</h2>
+        <h3>إجمالي المبيعات: ${total} ج</h3>
+        <ul class="report-list" id="reportList"></ul>
+        <button class="btn btn-danger" onclick="resetAll()">إعادة الضبط</button>
+        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>`;
+    let lst=document.getElementById('reportList');
+    for(let n in summary){
+        let li=document.createElement('li');
+        li.innerHTML=`<span>${n} × ${summary[n].qty}</span><span>${summary[n].total} ج</span>`;
+        lst.appendChild(li);
+    }
+}
+function resetAll(){
+    if(confirm("هل أنت متأكد من إعادة الضبط؟")){
+        let num=+localStorage.getItem('numTables')||0;
+        for(let i=1;i<=num;i++){ localStorage.removeItem(`orders_${i}`); }
+        openReports();
+    }
+}
 
-        function openAddModal() {
-            editIndex = -1;
-            document.getElementById('modalTitle').textContent = 'إضافة صنف';
-            document.getElementById('menuName').value = '';
-            document.getElementById('menuPrice').value = '';
-            document.getElementById('menuModal').style.display = 'flex';
-        }
-
-        function openEditModal(idx) {
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            editIndex = idx;
-            document.getElementById('modalTitle').textContent = 'تعديل صنف';
-            document.getElementById('menuName').value = menu[idx].name;
-            document.getElementById('menuPrice').value = menu[idx].price;
-            document.getElementById('menuModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('menuModal').style.display = 'none';
-        }
-
-        function saveMenuItem() {
-            let name = document.getElementById('menuName').value.trim();
-            let price = document.getElementById('menuPrice').value.trim();
-            if (!name || !price || isNaN(price)) return;
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            if (editIndex >= 0) {
-                menu[editIndex] = { name, price };
-            } else {
-                menu.push({ name, price });
-            }
-            localStorage.setItem('menu', JSON.stringify(menu));
-            closeModal();
-            displayMenuItems();
-        }
-
-        function removeMenuItem(idx) {
-            if (!confirm('هل أنت متأكد من حذف هذا الصنف؟')) return;
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            menu.splice(idx, 1);
-            localStorage.setItem('menu', JSON.stringify(menu));
-            displayMenuItems();
-        }
-
-        function loadHomeScreen() {
-            let main = document.getElementById('main-content');
-            main.innerHTML = `
-                <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
-                <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
-                <div id="tablesContainer"></div>
-            `;
-            loadTables();
-        }
-
-        // Table Orders Logic
-        function openTable(tableNumber) {
-            localStorage.setItem('currentTable', tableNumber);
-            let main = document.getElementById('main-content');
-            main.innerHTML = `
-                <h2>إدارة الطلبات – طاولة ${tableNumber}</h2>
-                <div id="menuGrid"></div>
-                <h3>الطلبات</h3>
-                <ul class="orders-list" id="ordersList"></ul>
-                <div style="margin-top: 10px; text-align: right; font-weight: bold;">الإجمالي: <span id="totalPrice">0</span> جنيه</div>
-                <button class="btn btn-danger" onclick="clearOrders()">حذف الكل</button>
-                <button class="btn btn-secondary" onclick="loadHomeScreen()">رجوع</button>
-            `;
-            displayMenuForTable();
-            displayOrders();
-        }
-
-        function displayMenuForTable() {
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            let grid = document.getElementById('menuGrid');
-            grid.innerHTML = '';
-            menu.forEach((item, idx) => {
-                let card = document.createElement('div');
-                card.className = 'item-card';
-                card.innerHTML = `
-                    <div>
-                        <h4>${item.name}</h4>
-                        <div>${item.price} جنيه</div>
-                    </div>
-                    <button class="btn btn-primary" onclick="addToOrder(${idx})">+</button>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function addToOrder(idx) {
-            let table = localStorage.getItem('currentTable');
-            let key = `orders_${table}`;
-            let orders = JSON.parse(localStorage.getItem(key)) || [];
-            let menu = JSON.parse(localStorage.getItem('menu')) || [];
-            let item = menu[idx];
-            let exist = orders.find(o => o.name === item.name);
-            if (exist) exist.qty++;
-            else orders.push({ name: item.name, price: +item.price, qty: 1 });
-            localStorage.setItem(key, JSON.stringify(orders));
-            displayOrders();
-        }
-
-        function displayOrders() {
-            let table = localStorage.getItem('currentTable');
-            let key = `orders_${table}`;
-            let orders = JSON.parse(localStorage.getItem(key)) || [];
-            let list = document.getElementById('ordersList');
-            list.innerHTML = '';
-            let total = 0;
-            orders.forEach((o, i) => {
-                total += o.price * o.qty;
-                let li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${o.name} × ${o.qty}</span>
-                    <span>${o.price * o.qty} ج</span>
-                    <button class="btn btn-danger" onclick="removeOne(${i})">–</button>
-                `;
-                list.appendChild(li);
-            });
-            document.getElementById('totalPrice').textContent = total;
-        }
-
-        function removeOne(idx) {
-            let table = localStorage.getItem('currentTable');
-            let key = `orders_${table}`;
-            let orders = JSON.parse(localStorage.getItem(key)) || [];
-            if (orders[idx].qty > 1) orders[idx].qty--;
-            else orders.splice(idx, 1);
-            localStorage.setItem(key, JSON.stringify(orders));
-            displayOrders();
-        }
-
-        function clearOrders() {
-            if (!confirm('هل أنت متأكد من حذف جميع الطلبات؟')) return;
-            let table = localStorage.getItem('currentTable');
-            localStorage.removeItem(`orders_${table}`);
-            displayOrders();
-        }
-
-        // Initialize
-        loadTables();
-    </script>
+// Initialize
+loadTables();
+</script>
 </body>
 </html>
