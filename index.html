@@ -1,272 +1,442 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بابا عبده</title>
-    <style>
-        body {font-family: Arial, sans-serif; direction: rtl; margin:0; padding:0; background:#f8f8f8;}
-        header {background:#ff6600; color:white; padding:15px; text-align:center; position:relative;}
-        .small-text {position:absolute; top:5px; left:10px; font-size:12px; color:white;}
-        main {padding:20px;}
-        .btn {padding:6px 12px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-size:14px;}
-        .btn-primary {background:#28a745; color:white;}
-        .btn-secondary {background:#6c757d; color:white;}
-        .btn-danger {background:#dc3545; color:white;}
-        .btn-warning {background:#ffc107; color:black;}
-        .btn:hover {opacity:0.9;}
-        #tablesContainer {display:flex; flex-wrap:wrap; justify-content:center; margin-top:20px;}
-        .table {width:120px; height:120px; background:white; border:2px solid #ff6600; margin:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; border-radius:8px; transition:transform .2s; font-weight:bold; position:relative;}
-        .table:hover {transform:scale(1.05);}
-        .rename-btn {position:absolute; bottom:5px; right:5px; font-size:12px; padding:2px 5px;}
-        .modal-overlay {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center;}
-        .modal {background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; text-align:right;}
-        .modal input, .modal textarea {width:100%; padding:8px; margin:5px 0; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;}
-        /* Orders Dropdown */
-        .dropdown-container {margin-top:20px;}
-        #categoryDropdown {width:100%; padding:8px; font-size:14px; border-radius:5px; border:1px solid #ccc;}
-        .items-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-top:10px;}
-        .card {background:white; padding:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:flex; flex-direction:column; justify-content:space-between;}
-        .orders-list {list-style:none; padding:0; margin-top:20px;}
-        .orders-list li {background:white; padding:10px; margin:5px 0; border-radius:5px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
-        .note {width:100%; font-size:12px; color:#555; text-align:right; margin-top:5px;}
-        .report-list {list-style:none; padding:0; margin-top:20px;}
-        .report-list li {background:white; padding:10px; margin:5px 0; border-radius:5px; display:flex; justify-content:space-between;}
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>بابا عبده</title>
+<style>
+  body{font-family:Arial, sans-serif; direction:rtl; margin:0; padding:0; background:#f8f8f8;}
+  header{background:#ff6600; color:#fff; padding:15px; text-align:center; position:relative;}
+  .small-text{position:absolute; top:5px; left:10px; font-size:12px; color:#fff;}
+  main{padding:20px;}
+  .btn{padding:6px 12px; margin:5px; border:none; border-radius:6px; cursor:pointer; font-size:14px;}
+  .btn-primary{background:#28a745; color:#fff;}
+  .btn-secondary{background:#6c757d; color:#fff;}
+  .btn-danger{background:#dc3545; color:#fff;}
+  .btn-warning{background:#ffc107; color:#000;}
+  .btn:hover{opacity:.9}
+  #tablesContainer{display:flex; flex-wrap:wrap; justify-content:center; margin-top:20px;}
+  .table{width:120px; height:120px; background:#fff; border:2px solid #ff6600; margin:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; transition:transform .2s; font-weight:bold; position:relative;}
+  .table:hover{transform:scale(1.05);}
+  .rename-btn{position:absolute; bottom:5px; right:5px; font-size:12px; padding:2px 6px;}
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:9999;}
+  .modal{background:#fff; padding:18px; border-radius:10px; width:92%; max-width:420px; text-align:right;}
+  .modal input, .modal textarea{width:100%; padding:8px; margin:5px 0; box-sizing:border-box; border:1px solid #ccc; border-radius:6px;}
+  /* Orders */
+  .dropdown-container{margin-top:20px;}
+  #categoryDropdown{width:100%; padding:8px; font-size:14px; border-radius:6px; border:1px solid #ccc;}
+  .items-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:10px; margin-top:10px;}
+  .card{background:#fff; padding:10px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.1); display:flex; flex-direction:column; gap:8px;}
+  .orders-list{list-style:none; padding:0; margin-top:20px;}
+  .orders-list li{background:#fff; padding:10px; margin:5px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+  .note{width:100%; font-size:12px; color:#555; text-align:right; margin-top:5px; background:#fafafa; padding:6px; border-radius:6px;}
+  /* Reports */
+  .report-list{list-style:none; padding:0; margin-top:20px;}
+  .report-list li{background:#fff; padding:10px; margin:5px 0; border-radius:8px; display:flex; justify-content:space-between;}
+  .muted{color:#666; font-size:13px;}
+  .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+</style>
 </head>
 <body>
 <header>
-    <h1>بابا عبده</h1>
-    <span class="small-text">محمد وليد سعيد حسن عبد الهادي</span>
+  <h1>بابا عبده</h1>
+  <span class="small-text">محمد وليد سعيد حسن عبد الهادي</span>
 </header>
+
 <main id="main-content">
-    <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
-    <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
-    <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
-    <div id="tablesContainer"></div>
+  <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
+  <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
+  <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
+  <div id="tablesContainer"></div>
 </main>
 
 <!-- Note Modal -->
 <div class="modal-overlay" id="noteModal">
-    <div class="modal">
-        <h3>إضافة / تعديل ملاحظة</h3>
-        <textarea id="noteInput" rows="3" placeholder="اكتب الملاحظة..."></textarea>
-        <div>
-            <button class="btn btn-warning" onclick="quickNote('مقصوصة')">مقصوصة</button>
-            <button class="btn btn-warning" onclick="quickNote('اسباجتي')">اسباجتي</button>
-        </div>
-        <div style="text-align:left; margin-top:10px;">
-            <button class="btn btn-primary" onclick="saveNote()">حفظ</button>
-            <button class="btn btn-secondary" onclick="closeNoteModal()">إلغاء</button>
-        </div>
+  <div class="modal">
+    <h3>إضافة / تعديل ملاحظة</h3>
+    <textarea id="noteInput" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+    <div class="row">
+      <button class="btn btn-warning" onclick="quickNote('مقصوصة')">مقصوصة</button>
+      <button class="btn btn-warning" onclick="quickNote('اسباجتي')">اسباجتي</button>
     </div>
+    <div style="text-align:left; margin-top:10px;">
+      <button class="btn btn-primary" onclick="saveNote()">حفظ</button>
+      <button class="btn btn-secondary" onclick="closeNoteModal()">إلغاء</button>
+    </div>
+  </div>
 </div>
 
 <!-- Report Login Modal -->
 <div class="modal-overlay" id="reportLoginModal">
-    <div class="modal">
-        <h3>تسجيل الدخول للتقارير</h3>
-        <input type="password" id="reportPassword" placeholder="أدخل كلمة المرور">
-        <div style="text-align:left; margin-top:10px;">
-            <button class="btn btn-primary" onclick="checkReportPassword()">دخول</button>
-            <button class="btn btn-secondary" onclick="closeReportLogin()">إلغاء</button>
-        </div>
+  <div class="modal">
+    <h3>تسجيل الدخول للتقارير</h3>
+    <input type="password" id="reportPassword" placeholder="أدخل كلمة المرور"/>
+    <div style="text-align:left; margin-top:10px;">
+      <button class="btn btn-primary" onclick="checkReportPassword()">دخول</button>
+      <button class="btn btn-secondary" onclick="closeReportLogin()">إلغاء</button>
     </div>
+    <p class="muted">كلمة المرور الثابتة: 24102004</p>
+  </div>
 </div>
 
 <!-- Confirm Transfer Modal -->
 <div class="modal-overlay" id="transferModal">
-    <div class="modal">
-        <h3>تحويل الطلبات للتقرير</h3>
-        <p>سيتم تحويل الطلبات للتقرير وحذفها من الطاولة.</p>
-        <div style="text-align:left; margin-top:10px;">
-            <button class="btn btn-primary" onclick="confirmTransfer()">نعم</button>
-        </div>
+  <div class="modal">
+    <h3>تحويل الطلبات للتقرير</h3>
+    <p>سيتم تحويل الطلبات للتقرير ثم حذفها من الطاولة.</p>
+    <div style="text-align:left; margin-top:10px;">
+      <button class="btn btn-primary" onclick="confirmTransfer()">نعم</button>
     </div>
+  </div>
 </div>
 
 <script>
-// ====== المنيو ======
-function getMenu() { return JSON.parse(localStorage.getItem('menuSections')) || []; }
-function saveMenu(sections) { localStorage.setItem('menuSections', JSON.stringify(sections)); }
+/* ===================== Helpers / Storage ===================== */
+const LS = {
+  get: (k, def=null) => {
+    try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : (def===null?null:def); }
+    catch(e){ console.error('LS get error', k, e); return def; }
+  },
+  set: (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.error('LS set error', k, e); } },
+  remove: (k) => { localStorage.removeItem(k); }
+};
 
-// ====== الطاولات ======
-function createTables() {
-    let num = prompt('كم عدد الترابيزات؟'); 
-    if(!num||isNaN(num)||num<=0) return;
-    localStorage.setItem('numTables', num); 
-    localStorage.setItem('tableNames', JSON.stringify(Array.from({length:num}, (_,i)=>`طاولة ${i+1}`)));
-    loadTables();
+// Menu structure: [{ name: 'قسم', items: [{ name, price }] }]
+const getMenu = () => LS.get('menuSections', []);
+const saveMenu = (sections) => LS.set('menuSections', sections);
+
+/* ===================== Home / Tables ===================== */
+function createTables(){
+  const num = prompt('كم عدد الترابيزات؟');
+  if(!num || isNaN(num) || num<=0) return;
+  localStorage.setItem('numTables', String(num));
+  LS.set('tableNames', Array.from({length:num}, (_,i)=>`طاولة ${i+1}`));
+  loadTables();
 }
-function loadTables() {
-    let num = +localStorage.getItem('numTables')||0;
-    let names = JSON.parse(localStorage.getItem('tableNames'))||[];
-    let c = document.getElementById('tablesContainer'); 
-    c.innerHTML='';
-    for(let i=0;i<num;i++){ 
-        let d=document.createElement('div'); 
-        d.className='table'; 
-        d.innerHTML=`<div class="label">${names[i]||("طاولة "+(i+1))}</div>`;
-        d.onclick=()=>openTable(i+1);
-        let btn=document.createElement('button');
-        btn.textContent='✏️';
-        btn.className='rename-btn btn btn-warning';
-        btn.onclick=(e)=>{e.stopPropagation(); renameTable(i);};
-        d.appendChild(btn);
-        c.appendChild(d);
-    }    
+function loadTables(){
+  const num = +localStorage.getItem('numTables') || 0;
+  const names = LS.get('tableNames', []);
+  const c = document.getElementById('tablesContainer');
+  c.innerHTML = '';
+  for(let i=0;i<num;i++){
+    const d = document.createElement('div');
+    d.className = 'table';
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = names[i] || `طاولة ${i+1}`;
+    d.appendChild(label);
+    d.onclick = ()=> openTable(i+1);
+
+    const btn = document.createElement('button');
+    btn.textContent = '✏️';
+    btn.className = 'rename-btn btn btn-warning';
+    btn.onclick = (e)=>{ e.stopPropagation(); renameTable(i); };
+    d.appendChild(btn);
+
+    c.appendChild(d);
+  }
 }
 function renameTable(i){
-    let names=JSON.parse(localStorage.getItem('tableNames'))||[];
-    let newName=prompt('اكتب اسم الطاولة الجديد:', '');
-    if(newName!==null && newName.trim()!==''){
-        names[i]=newName.trim();
-    }else{
-        names[i]=`طاولة ${i+1}`;
-    }
-    localStorage.setItem('tableNames', JSON.stringify(names));
-    loadTables();
+  const names = LS.get('tableNames', []);
+  const newName = prompt('اكتب اسم الطاولة الجديد:', '');
+  names[i] = (newName && newName.trim()) ? newName.trim() : `طاولة ${i+1}`;
+  LS.set('tableNames', names);
+  loadTables();
 }
 
-// ====== إدارة المنيو ======
-function manageMenu() {
-    let main = document.getElementById('main-content');
-    main.innerHTML = `
-        <h2>إدارة المنيو</h2>
-        <div><input type="text" id="newCategory" placeholder="اسم القسم"><button class="btn btn-primary" onclick="addCategory()">إضافة قسم</button></div>
-        <div id="menuContainer"></div>
-        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
-    `;
-    renderMenu();
+/* ===================== Menu Management ===================== */
+function manageMenu(){
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <h2>إدارة المنيو</h2>
+    <div class="row">
+      <input type="text" id="newCategory" placeholder="اسم القسم" />
+      <button class="btn btn-primary" onclick="addCategory()">إضافة قسم</button>
+    </div>
+    <div id="menuContainer"></div>
+    <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
+  `;
+  renderMenu();
 }
-function loadHome(){ 
-    document.getElementById('main-content').innerHTML=`
-        <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
-        <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
-        <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
-        <div id="tablesContainer"></div>
-    `; 
-    loadTables(); 
+function loadHome(){
+  document.getElementById('main-content').innerHTML = `
+    <button class="btn btn-primary" onclick="createTables()">إنشاء ترابيزات</button>
+    <button class="btn btn-secondary" onclick="manageMenu()">إدارة المنيو</button>
+    <button class="btn btn-warning" onclick="openReportLogin()">التقارير</button>
+    <div id="tablesContainer"></div>
+  `;
+  loadTables();
 }
-function renderMenu() {
-    let c = document.getElementById('menuContainer'); c.innerHTML='';
-    let sections = getMenu();
-    sections.forEach((sec,ci)=>{
-        let s = document.createElement('div'); s.className='section';
-        s.innerHTML = `<h3>${sec.name}</h3>`;
-        sec.items.forEach((it,ii)=>{
-            let itDiv = document.createElement('div'); itDiv.className='item';
-            itDiv.innerHTML = `<span>${it.name} - ${it.price} ج</span><button class="btn btn-danger" onclick="removeItem(${ci},${ii})">حذف</button>`;
-            s.appendChild(itDiv);
-        });
-        s.innerHTML += `<button class="btn btn-primary" onclick="showAddItemForm(${ci})">إضافة صنف</button><button class="btn btn-danger" onclick="removeCategory(${ci})">حذف قسم</button><div id="addForm${ci}" class="add-form"></div>`;
-        c.appendChild(s);
+function renderMenu(){
+  const c = document.getElementById('menuContainer');
+  c.innerHTML = '';
+  const sections = getMenu();
+  sections.forEach((sec, ci)=>{
+    const s = document.createElement('div');
+    s.className = 'section';
+    const h = document.createElement('h3'); h.textContent = sec.name; s.appendChild(h);
+
+    sec.items.forEach((it, ii)=>{
+      const row = document.createElement('div'); row.className = 'item';
+      const span = document.createElement('span'); span.textContent = `${it.name} - ${it.price} ج`;
+      const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف';
+      del.onclick = ()=> removeItem(ci, ii);
+      row.appendChild(span); row.appendChild(del);
+      s.appendChild(row);
     });
-}
-function addCategory(){ let n = document.getElementById('newCategory').value.trim(); if(!n) return; let m=getMenu(); m.push({name:n,items:[]}); saveMenu(m); document.getElementById('newCategory').value=''; renderMenu(); }
-function removeCategory(ci){ if(!confirm('حذف القسم؟')) return; let m=getMenu(); m.splice(ci,1); saveMenu(m); renderMenu(); }
-function showAddItemForm(ci){ let f = document.getElementById(`addForm${ci}`); f.innerHTML = `
-    <input type="text" id="itemName${ci}" placeholder="اسم الصنف">
-    <input type="number" id="itemPrice${ci}" placeholder="السعر">
-    <button class="btn btn-primary" onclick="addItem(${ci})">إضافة</button>
-`; f.style.display='block'; }
-function addItem(ci){ let m=getMenu(); let n=document.getElementById(`itemName${ci}`).value.trim(); let p=parseFloat(document.getElementById(`itemPrice${ci}`).value); if(!n||isNaN(p)) return; m[ci].items.push({name:n,price:p}); saveMenu(m); renderMenu(); }
-function removeItem(ci,ii){ if(!confirm('حذف الصنف؟')) return; let m=getMenu(); m[ci].items.splice(ii,1); saveMenu(m); renderMenu(); }
 
-// ====== الطلبات ======
-let currentNoteItem=null, currentEditIndex=null;
-function openTable(num){ 
-    localStorage.setItem('currentTable',num); 
-    let names=JSON.parse(localStorage.getItem('tableNames'))||[];
-    let main=document.getElementById('main-content'); 
-    main.innerHTML=`
-        <h2>إدارة الطلبات – ${names[num-1]||("طاولة "+num)}</h2>
-        <div class="dropdown-container"><select id="categoryDropdown"></select></div>
-        <div class="items-grid" id="menuGrid"></div>
-        <h3>الطلبات</h3><ul class="orders-list" id="ordersList"></ul>
-        <div style="text-align:right;font-weight:bold; margin-top:10px;">الإجمالي: <span id="totalPrice">0</span> ج</div>
-        <button class="btn btn-danger" onclick="askTransfer()">حذف الكل</button>
-        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
-    `; 
-    initDropdown(); 
-    displayOrders(); 
+    const addBtn = document.createElement('button'); addBtn.className='btn btn-primary'; addBtn.textContent='إضافة صنف';
+    addBtn.onclick = ()=> showAddItemForm(ci);
+    const remBtn = document.createElement('button'); remBtn.className='btn btn-danger'; remBtn.textContent='حذف قسم';
+    remBtn.onclick = ()=> removeCategory(ci);
+    const addForm = document.createElement('div'); addForm.id = `addForm${ci}`; addForm.className='add-form';
+
+    s.appendChild(addBtn); s.appendChild(remBtn); s.appendChild(addForm);
+    c.appendChild(s);
+  });
 }
-function initDropdown(){ let dd=document.getElementById('categoryDropdown'); dd.innerHTML=''; getMenu().forEach((s,i)=>{ let o=document.createElement('option'); o.value=i; o.textContent=s.name; dd.appendChild(o); }); dd.onchange=renderItems; if(dd.options.length) renderItems(); }
-function renderItems(){ let idx=+document.getElementById('categoryDropdown').value; let items=getMenu()[idx].items; let g=document.getElementById('menuGrid'); g.innerHTML=''; items.forEach(it=>{ let c=document.createElement('div'); c.className='card'; c.innerHTML=`<h4>${it.name}</h4><div class="price">${it.price} ج</div>`; let b=document.createElement('button'); b.textContent='+'; b.onclick=()=>{currentNoteItem=it; currentEditIndex=null; openNoteModal();}; c.appendChild(b); g.appendChild(c); }); }
-function openNoteModal(note='',editIndex=null){ document.getElementById('noteInput').value=note; currentEditIndex=editIndex; document.getElementById('noteModal').style.display='flex'; }
+function addCategory(){
+  const input = document.getElementById('newCategory');
+  const n = (input.value||'').trim();
+  if(!n) return;
+  const m = getMenu();
+  m.push({name:n, items:[]});
+  saveMenu(m); input.value=''; renderMenu();
+}
+function removeCategory(ci){
+  if(!confirm('حذف القسم؟')) return;
+  const m = getMenu(); m.splice(ci,1); saveMenu(m); renderMenu();
+}
+function showAddItemForm(ci){
+  const f = document.getElementById(`addForm${ci}`);
+  f.innerHTML = '';
+  const name = document.createElement('input'); name.type='text'; name.placeholder='اسم الصنف'; name.id=`itemName${ci}`;
+  const price = document.createElement('input'); price.type='number'; price.placeholder='السعر'; price.step='0.01'; price.id=`itemPrice${ci}`;
+  const add = document.createElement('button'); add.className='btn btn-primary'; add.textContent='إضافة';
+  add.onclick = ()=> addItem(ci);
+  f.style.display='block';
+  f.appendChild(name); f.appendChild(price); f.appendChild(add);
+}
+function addItem(ci){
+  const m = getMenu();
+  const n = (document.getElementById(`itemName${ci}`).value||'').trim();
+  const p = parseFloat(document.getElementById(`itemPrice${ci}`).value);
+  if(!n || isNaN(p)) return;
+  m[ci].items.push({name:n, price:p});
+  saveMenu(m); renderMenu();
+}
+function removeItem(ci, ii){
+  if(!confirm('حذف الصنف؟')) return;
+  const m = getMenu(); m[ci].items.splice(ii,1); saveMenu(m); renderMenu();
+}
+
+/* ===================== Orders ===================== */
+let currentNoteItem = null;
+let currentEditIndex = null;
+
+function openTable(num){
+  localStorage.setItem('currentTable', String(num));
+  const names = LS.get('tableNames', []);
+  const title = names[num-1] || `طاولة ${num}`;
+
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <h2>إدارة الطلبات – ${title}</h2>
+    <div class="dropdown-container"><select id="categoryDropdown"></select></div>
+    <div class="items-grid" id="menuGrid"></div>
+    <h3>الطلبات</h3>
+    <ul class="orders-list" id="ordersList"></ul>
+    <div style="text-align:right;font-weight:bold; margin-top:10px;">الإجمالي: <span id="totalPrice">0</span> ج</div>
+    <button class="btn btn-danger" onclick="askTransfer()">حذف الكل</button>
+    <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
+  `;
+  initDropdown(); displayOrders();
+}
+function initDropdown(){
+  const dd = document.getElementById('categoryDropdown');
+  dd.innerHTML = '';
+  getMenu().forEach((s, i)=>{
+    const o = document.createElement('option');
+    o.value = String(i); o.textContent = s.name;
+    dd.appendChild(o);
+  });
+  dd.onchange = renderItems;
+  if(dd.options.length) renderItems();
+}
+function renderItems(){
+  const idx = +document.getElementById('categoryDropdown').value;
+  const items = (getMenu()[idx]||{items:[]}).items;
+  const g = document.getElementById('menuGrid');
+  g.innerHTML = '';
+  items.forEach(it=>{
+    const card = document.createElement('div'); card.className='card';
+    const h = document.createElement('h4'); h.textContent = it.name;
+    const pr = document.createElement('div'); pr.className='price'; pr.textContent = `${it.price} ج`;
+    const b = document.createElement('button'); b.className='btn btn-primary'; b.textContent='+';
+    b.onclick = ()=>{ currentNoteItem = it; currentEditIndex = null; openNoteModal(); };
+    card.appendChild(h); card.appendChild(pr); card.appendChild(b);
+    g.appendChild(card);
+  });
+}
+function openNoteModal(note='', editIndex=null){
+  document.getElementById('noteInput').value = note || '';
+  currentEditIndex = (typeof editIndex==='number') ? editIndex : null;
+  document.getElementById('noteModal').style.display='flex';
+}
 function closeNoteModal(){ document.getElementById('noteModal').style.display='none'; }
-function quickNote(txt){ let inp=document.getElementById('noteInput'); inp.value=inp.value?inp.value+" "+txt:txt; }
-function saveNote(){ 
-    let note=document.getElementById('noteInput').value.trim(); 
-    let t=localStorage.getItem('currentTable'), k=`orders_${t}`; 
-    let ord=JSON.parse(localStorage.getItem(k))||[]; 
-    if(currentEditIndex!==null){
-        ord[currentEditIndex].note=note;
-    }else{
-        let it=currentNoteItem; 
-        let ex=ord.find(o=>o.name===it.name && o.note===note); 
-        if(ex) ex.qty++; 
-        else ord.push({name:it.name,price:it.price,qty:1,note}); 
-    }
-    localStorage.setItem(k,JSON.stringify(ord)); 
-    closeNoteModal(); 
-    displayOrders(); 
+function quickNote(txt){
+  const inp = document.getElementById('noteInput');
+  inp.value = inp.value ? (inp.value + ' ' + txt) : txt;
+  inp.focus();
 }
-function displayOrders(){ 
-    let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; 
-    let lst=document.getElementById('ordersList'); 
-    lst.innerHTML=''; 
-    let tot=0; 
-    ord.forEach((o,i)=>{ 
-        tot+=o.price*o.qty; 
-        let li=document.createElement('li'); 
-        li.innerHTML=`<span>${o.name} × ${o.qty}</span><span>${o.price*o.qty} ج</span>
-            <div class="note">${o.note||''}</div>
-            <div>
-                <button class="btn btn-secondary" onclick="openNoteModal('${o.note}',${i})">✏️</button>
-                <button class="btn btn-danger" onclick="removeOne(${i})">–</button>
-            </div>`;
-        lst.appendChild(li); 
-    }); 
-    document.getElementById('totalPrice').textContent=tot; 
-}
-function removeOne(i){ let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; if(ord[i].qty>1) ord[i].qty--; else ord.splice(i,1); localStorage.setItem(k,JSON.stringify(ord)); displayOrders(); }
+function saveNote(){
+  const note = (document.getElementById('noteInput').value||'').trim();
+  const t = localStorage.getItem('currentTable');
+  const k = `orders_${t}`;
+  const ord = LS.get(k, []);
 
-// ====== التحويل للتقرير ======
+  if(currentEditIndex !== null){
+    ord[currentEditIndex].note = note;
+  }else{
+    const it = currentNoteItem;
+    const ex = ord.find(o=> o.name===it.name && o.note===note);
+    if(ex) ex.qty++;
+    else ord.push({name: it.name, price: it.price, qty: 1, note});
+  }
+  LS.set(k, ord);
+  closeNoteModal(); displayOrders();
+}
+function displayOrders(){
+  const t = localStorage.getItem('currentTable');
+  const k = `orders_${t}`;
+  const ord = LS.get(k, []);
+  const lst = document.getElementById('ordersList');
+  lst.innerHTML = '';
+  let tot = 0;
+
+  ord.forEach((o, i)=>{
+    tot += o.price * o.qty;
+    const li = document.createElement('li');
+
+    const left = document.createElement('span'); left.textContent = `${o.name} × ${o.qty}`;
+    const right = document.createElement('span'); right.textContent = `${o.price*o.qty} ج`;
+
+    const noteDiv = document.createElement('div'); noteDiv.className='note'; noteDiv.textContent = o.note||'';
+
+    const actions = document.createElement('div'); actions.className='row';
+    const editBtn = document.createElement('button'); editBtn.className='btn btn-secondary'; editBtn.title='تعديل الملاحظة'; editBtn.textContent='✏️';
+    editBtn.onclick = ()=> openNoteModal(o.note||'', i);
+
+    const minusBtn = document.createElement('button'); minusBtn.className='btn btn-danger'; minusBtn.textContent='–';
+    minusBtn.onclick = ()=> removeOne(i);
+
+    actions.appendChild(editBtn); actions.appendChild(minusBtn);
+
+    li.appendChild(left); li.appendChild(right);
+    li.appendChild(noteDiv);
+    li.appendChild(actions);
+
+    lst.appendChild(li);
+  });
+
+  document.getElementById('totalPrice').textContent = tot;
+}
+function removeOne(i){
+  const t = localStorage.getItem('currentTable');
+  const k = `orders_${t}`;
+  const ord = LS.get(k, []);
+  if(ord[i].qty > 1) ord[i].qty--;
+  else ord.splice(i,1);
+  LS.set(k, ord);
+  displayOrders();
+}
+
+/* ===================== Transfer to Reports (Mandatory) ===================== */
 function askTransfer(){ document.getElementById('transferModal').style.display='flex'; }
-function confirmTransfer(){ 
-    let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; 
-    if(ord.length){ 
-        let all=JSON.parse(localStorage.getItem('allOrders'))||[]; 
-        all=all.concat(ord); 
-        localStorage.setItem('allOrders',JSON.stringify(all)); 
-        let count=+localStorage.getItem('orderCount')||0; 
-        localStorage.setItem('orderCount',count+1); 
-    }
-    localStorage.removeItem(k); 
-    document.getElementById('transferModal').style.display='none'; 
-    displayOrders(); 
+function confirmTransfer(){
+  const t = localStorage.getItem('currentTable');
+  const k = `orders_${t}`;
+  const ord = LS.get(k, []);
+
+  if(ord.length){
+    let all = LS.get('allOrders', []);
+    all = all.concat(ord);
+    LS.set('allOrders', all);
+
+    const cnt = +localStorage.getItem('orderCount') || 0;
+    localStorage.setItem('orderCount', String(cnt+1));
+  }
+  LS.remove(k);
+  document.getElementById('transferModal').style.display='none';
+  displayOrders();
 }
 
-// ====== التقارير ======
-function openReportLogin(){ document.getElementById('reportPassword').value=''; document.getElementById('reportLoginModal').style.display='flex'; }
+/* ===================== Reports (Password: 24102004) ===================== */
+function openReportLogin(){
+  document.getElementById('reportPassword').value = '';
+  document.getElementById('reportLoginModal').style.display='flex';
+}
 function closeReportLogin(){ document.getElementById('reportLoginModal').style.display='none'; }
-function checkReportPassword(){ 
-    let pass=document.getElementById('reportPassword').value; 
-    if(pass==="24102004"){ closeReportLogin(); openReports(); }
-    else alert("كلمة المرور غير صحيحة"); 
+function checkReportPassword(){
+  const pass = document.getElementById('reportPassword').value;
+  if(pass === '24102004'){ closeReportLogin(); openReports(); }
+  else alert('كلمة المرور غير صحيحة');
 }
 function openReports(){
-    let main=document.getElementById('main-content'); 
-    let all=JSON.parse(localStorage.getItem('allOrders'))||[];
-    let total=0; let summary={};
-    all.forEach(o=>{
-        total+=o.price*o.qty;
-        if(!summary[o.name]) summary[o.name]={qty:0,total:0};
-        summary[o.name].qty+=o.qty;
-        summary[o.name].total+=o.price*o.qty;
+  const main = document.getElementById('main-content');
+  const all = LS.get('allOrders', []);
+  let total = 0;
+  const summary = {}; // { name: {qty,total} }
+
+  all.forEach(o=>{
+    const s = summary[o.name] || {qty:0,total:0};
+    s.qty += o.qty;
+    s.total += o.price * o.qty;
+    summary[o.name] = s;
+    total += o.price * o.qty;
+  });
+
+  const orderCount = +localStorage.getItem('orderCount') || 0;
+
+  main.innerHTML = `
+    <h2>التقارير</h2>
+    <div class="row">
+      <div class="btn btn-secondary" style="cursor:default;">إجمالي المبيعات: <b>${total}</b> ج</div>
+      <div class="btn btn-secondary" style="cursor:default;">عدد العمليات: <b>${orderCount}</b></div>
+    </div>
+    <h3>الأصناف المبيعة (مجمعة)</h3>
+    <ul class="report-list" id="reportList"></ul>
+    <button class="btn btn-danger" onclick="resetAll()">إعادة الضبط</button>
+    <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
+  `;
+
+  // عرض الملخص بترتيب تنازلي حسب الإجمالي
+  const lst = document.getElementById('reportList');
+  Object.entries(summary)
+    .sort((a,b)=> b[1].total - a[1].total)
+    .forEach(([name, info])=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${name} × ${info.qty}</span><span>${info.total} ج</span>`;
+      lst.appendChild(li);
     });
-    let orderCount=+localStorage.getItem('orderCount')||0;
-    main.innerHTML=`<h2>التقارير</h2>
-        <h3>إجمالي المبيعات: ${total} ج</h3>
-        <h3>عدد العمليات: ${orderCount}</h3
+}
+function resetAll(){
+  if(!confirm('هل أنت متأكد من إعادة الضبط (مسح كل الطلبات والتقارير)؟')) return;
+
+  // امسح الطلبات في كل الطاولات
+  const num = +localStorage.getItem('numTables') || 0;
+  for(let i=1;i<=num;i++){ LS.remove(`orders_${i}`); }
+
+  // امسح التقرير والعداد
+  LS.set('allOrders', []);
+  localStorage.setItem('orderCount', '0');
+
+  // إبقاء المنيو وأسماء الطاولات كما هي
+  openReports();
+}
+
+/* ===================== Init ===================== */
+loadTables();
+</script>
+</body>
+</html>
