@@ -9,7 +9,7 @@
         header {background:#ff6600; color:white; padding:15px; text-align:center; position:relative;}
         .small-text {position:absolute; top:5px; left:10px; font-size:12px; color:white;}
         main {padding:20px;}
-        .btn {padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-size:14px;}
+        .btn {padding:6px 12px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-size:14px;}
         .btn-primary {background:#28a745; color:white;}
         .btn-secondary {background:#6c757d; color:white;}
         .btn-danger {background:#dc3545; color:white;}
@@ -49,10 +49,14 @@
 <!-- Note Modal -->
 <div class="modal-overlay" id="noteModal">
     <div class="modal">
-        <h3>إضافة ملاحظة</h3>
+        <h3>إضافة / تعديل ملاحظة</h3>
         <textarea id="noteInput" rows="3" placeholder="اكتب الملاحظة..."></textarea>
+        <div>
+            <button class="btn btn-warning" onclick="quickNote('مقصوصة')">مقصوصة</button>
+            <button class="btn btn-warning" onclick="quickNote('اسباجتي')">اسباجتي</button>
+        </div>
         <div style="text-align:left; margin-top:10px;">
-            <button class="btn btn-primary" onclick="saveNote()">إضافة</button>
+            <button class="btn btn-primary" onclick="saveNote()">حفظ</button>
             <button class="btn btn-secondary" onclick="closeNoteModal()">إلغاء</button>
         </div>
     </div>
@@ -70,12 +74,23 @@
     </div>
 </div>
 
+<!-- Confirm Transfer Modal -->
+<div class="modal-overlay" id="transferModal">
+    <div class="modal">
+        <h3>تحويل الطلبات للتقرير</h3>
+        <p>سيتم تحويل الطلبات للتقرير وحذفها من الطاولة.</p>
+        <div style="text-align:left; margin-top:10px;">
+            <button class="btn btn-primary" onclick="confirmTransfer()">نعم</button>
+        </div>
+    </div>
+</div>
+
 <script>
-// Data structure: menuSections = [{ name: 'قسم', items: [{ name, price }] }]
+// ====== المنيو ======
 function getMenu() { return JSON.parse(localStorage.getItem('menuSections')) || []; }
 function saveMenu(sections) { localStorage.setItem('menuSections', JSON.stringify(sections)); }
 
-// -- Home --
+// ====== الطاولات ======
 function createTables() {
     let num = prompt('كم عدد الترابيزات؟'); 
     if(!num||isNaN(num)||num<=0) return;
@@ -113,7 +128,7 @@ function renameTable(i){
     loadTables();
 }
 
-// -- Menu Management --
+// ====== إدارة المنيو ======
 function manageMenu() {
     let main = document.getElementById('main-content');
     main.innerHTML = `
@@ -158,8 +173,8 @@ function showAddItemForm(ci){ let f = document.getElementById(`addForm${ci}`); f
 function addItem(ci){ let m=getMenu(); let n=document.getElementById(`itemName${ci}`).value.trim(); let p=parseFloat(document.getElementById(`itemPrice${ci}`).value); if(!n||isNaN(p)) return; m[ci].items.push({name:n,price:p}); saveMenu(m); renderMenu(); }
 function removeItem(ci,ii){ if(!confirm('حذف الصنف؟')) return; let m=getMenu(); m[ci].items.splice(ii,1); saveMenu(m); renderMenu(); }
 
-// -- Orders with Dropdown --
-let currentNoteItem=null;
+// ====== الطلبات ======
+let currentNoteItem=null, currentEditIndex=null;
 function openTable(num){ 
     localStorage.setItem('currentTable',num); 
     let names=JSON.parse(localStorage.getItem('tableNames'))||[];
@@ -170,22 +185,70 @@ function openTable(num){
         <div class="items-grid" id="menuGrid"></div>
         <h3>الطلبات</h3><ul class="orders-list" id="ordersList"></ul>
         <div style="text-align:right;font-weight:bold; margin-top:10px;">الإجمالي: <span id="totalPrice">0</span> ج</div>
-        <button class="btn btn-danger" onclick="clearOrders()">حذف الكل</button>
+        <button class="btn btn-danger" onclick="askTransfer()">حذف الكل</button>
         <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>
     `; 
     initDropdown(); 
     displayOrders(); 
 }
 function initDropdown(){ let dd=document.getElementById('categoryDropdown'); dd.innerHTML=''; getMenu().forEach((s,i)=>{ let o=document.createElement('option'); o.value=i; o.textContent=s.name; dd.appendChild(o); }); dd.onchange=renderItems; if(dd.options.length) renderItems(); }
-function renderItems(){ let idx=+document.getElementById('categoryDropdown').value; let items=getMenu()[idx].items; let g=document.getElementById('menuGrid'); g.innerHTML=''; items.forEach(it=>{ let c=document.createElement('div'); c.className='card'; c.innerHTML=`<h4>${it.name}</h4><div class="price">${it.price} ج</div>`; let b=document.createElement('button'); b.textContent='+'; b.onclick=()=>{currentNoteItem=it; openNoteModal();}; c.appendChild(b); g.appendChild(c); }); }
-function openNoteModal(){ document.getElementById('noteInput').value=''; document.getElementById('noteModal').style.display='flex'; }
+function renderItems(){ let idx=+document.getElementById('categoryDropdown').value; let items=getMenu()[idx].items; let g=document.getElementById('menuGrid'); g.innerHTML=''; items.forEach(it=>{ let c=document.createElement('div'); c.className='card'; c.innerHTML=`<h4>${it.name}</h4><div class="price">${it.price} ج</div>`; let b=document.createElement('button'); b.textContent='+'; b.onclick=()=>{currentNoteItem=it; currentEditIndex=null; openNoteModal();}; c.appendChild(b); g.appendChild(c); }); }
+function openNoteModal(note='',editIndex=null){ document.getElementById('noteInput').value=note; currentEditIndex=editIndex; document.getElementById('noteModal').style.display='flex'; }
 function closeNoteModal(){ document.getElementById('noteModal').style.display='none'; }
-function saveNote(){ let note=document.getElementById('noteInput').value.trim(); let t=localStorage.getItem('currentTable'), k=`orders_${t}`; let ord=JSON.parse(localStorage.getItem(k))||[]; let it=currentNoteItem; let ex=ord.find(o=>o.name===it.name && o.note===note); if(ex) ex.qty++; else ord.push({name:it.name,price:it.price,qty:1,note}); localStorage.setItem(k,JSON.stringify(ord)); closeNoteModal(); displayOrders(); }
-function displayOrders(){ let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; let lst=document.getElementById('ordersList'); lst.innerHTML=''; let tot=0; ord.forEach((o,i)=>{ tot+=o.price*o.qty; let li=document.createElement('li'); li.innerHTML=`<span>${o.name} × ${o.qty}</span><span>${o.price*o.qty} ج</span><div class="note">${o.note||''}</div><button class="btn btn-danger" onclick="removeOne(${i})">–</button>`; lst.appendChild(li); }); document.getElementById('totalPrice').textContent=tot; }
+function quickNote(txt){ let inp=document.getElementById('noteInput'); inp.value=inp.value?inp.value+" "+txt:txt; }
+function saveNote(){ 
+    let note=document.getElementById('noteInput').value.trim(); 
+    let t=localStorage.getItem('currentTable'), k=`orders_${t}`; 
+    let ord=JSON.parse(localStorage.getItem(k))||[]; 
+    if(currentEditIndex!==null){
+        ord[currentEditIndex].note=note;
+    }else{
+        let it=currentNoteItem; 
+        let ex=ord.find(o=>o.name===it.name && o.note===note); 
+        if(ex) ex.qty++; 
+        else ord.push({name:it.name,price:it.price,qty:1,note}); 
+    }
+    localStorage.setItem(k,JSON.stringify(ord)); 
+    closeNoteModal(); 
+    displayOrders(); 
+}
+function displayOrders(){ 
+    let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; 
+    let lst=document.getElementById('ordersList'); 
+    lst.innerHTML=''; 
+    let tot=0; 
+    ord.forEach((o,i)=>{ 
+        tot+=o.price*o.qty; 
+        let li=document.createElement('li'); 
+        li.innerHTML=`<span>${o.name} × ${o.qty}</span><span>${o.price*o.qty} ج</span>
+            <div class="note">${o.note||''}</div>
+            <div>
+                <button class="btn btn-secondary" onclick="openNoteModal('${o.note}',${i})">✏️</button>
+                <button class="btn btn-danger" onclick="removeOne(${i})">–</button>
+            </div>`;
+        lst.appendChild(li); 
+    }); 
+    document.getElementById('totalPrice').textContent=tot; 
+}
 function removeOne(i){ let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; if(ord[i].qty>1) ord[i].qty--; else ord.splice(i,1); localStorage.setItem(k,JSON.stringify(ord)); displayOrders(); }
-function clearOrders(){ if(confirm('حذف جميع الطلبات؟')){ let t=localStorage.getItem('currentTable'); localStorage.removeItem(`orders_${t}`); displayOrders(); }}
 
-// -- Reports --
+// ====== التحويل للتقرير ======
+function askTransfer(){ document.getElementById('transferModal').style.display='flex'; }
+function confirmTransfer(){ 
+    let t=localStorage.getItem('currentTable'), k=`orders_${t}`, ord=JSON.parse(localStorage.getItem(k))||[]; 
+    if(ord.length){ 
+        let all=JSON.parse(localStorage.getItem('allOrders'))||[]; 
+        all=all.concat(ord); 
+        localStorage.setItem('allOrders',JSON.stringify(all)); 
+        let count=+localStorage.getItem('orderCount')||0; 
+        localStorage.setItem('orderCount',count+1); 
+    }
+    localStorage.removeItem(k); 
+    document.getElementById('transferModal').style.display='none'; 
+    displayOrders(); 
+}
+
+// ====== التقارير ======
 function openReportLogin(){ document.getElementById('reportPassword').value=''; document.getElementById('reportLoginModal').style.display='flex'; }
 function closeReportLogin(){ document.getElementById('reportLoginModal').style.display='none'; }
 function checkReportPassword(){ 
@@ -195,41 +258,15 @@ function checkReportPassword(){
 }
 function openReports(){
     let main=document.getElementById('main-content'); 
-    let num=+localStorage.getItem('numTables')||0;
-    let total=0;
-    let summary={};
-    for(let i=1;i<=num;i++){
-        let k=`orders_${i}`;
-        let ord=JSON.parse(localStorage.getItem(k))||[];
-        ord.forEach(o=>{
-            total+=o.price*o.qty;
-            if(!summary[o.name]) summary[o.name]={qty:0,total:0};
-            summary[o.name].qty+=o.qty;
-            summary[o.name].total+=o.price*o.qty;
-        });
-    }
+    let all=JSON.parse(localStorage.getItem('allOrders'))||[];
+    let total=0; let summary={};
+    all.forEach(o=>{
+        total+=o.price*o.qty;
+        if(!summary[o.name]) summary[o.name]={qty:0,total:0};
+        summary[o.name].qty+=o.qty;
+        summary[o.name].total+=o.price*o.qty;
+    });
+    let orderCount=+localStorage.getItem('orderCount')||0;
     main.innerHTML=`<h2>التقارير</h2>
         <h3>إجمالي المبيعات: ${total} ج</h3>
-        <ul class="report-list" id="reportList"></ul>
-        <button class="btn btn-danger" onclick="resetAll()">إعادة الضبط</button>
-        <button class="btn btn-secondary" onclick="loadHome()">رجوع</button>`;
-    let lst=document.getElementById('reportList');
-    for(let n in summary){
-        let li=document.createElement('li');
-        li.innerHTML=`<span>${n} × ${summary[n].qty}</span><span>${summary[n].total} ج</span>`;
-        lst.appendChild(li);
-    }
-}
-function resetAll(){
-    if(confirm("هل أنت متأكد من إعادة الضبط؟")){
-        let num=+localStorage.getItem('numTables')||0;
-        for(let i=1;i<=num;i++){ localStorage.removeItem(`orders_${i}`); }
-        openReports();
-    }
-}
-
-// Initialize
-loadTables();
-</script>
-</body>
-</html>
+        <h3>عدد العمليات: ${orderCount}</h3
